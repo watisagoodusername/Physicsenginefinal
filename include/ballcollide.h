@@ -12,6 +12,6 @@ public:
 
     void draw();
 
-    float get_r();
+    const float get_r() { return radius; };
 };
 

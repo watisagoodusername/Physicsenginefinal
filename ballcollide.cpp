@@ -4,18 +4,18 @@
 #include "include/PhysicsFunctions.h"
 
 ballcollide::ballcollide(float r, float xpos, float ypos, float m, float xvel, float yvel) {
-    ballcollide::radius = r;
-    ballcollide::size = Vector2{ r * 2, r * 2 };
-    ballcollide::mass = 3 * r * r * m;
-    ballcollide::position.x = xpos;
-    ballcollide::position.y = ypos;
-    ballcollide::velocity.x = xvel;
-    ballcollide::velocity.y = yvel;
-    ballcollide::maxspeed = 25;
+    radius = r;
+    size = Vector2{ r * 2, r * 2 };
+    mass = 3 * r * r * m;
+    position.x = xpos;
+    position.y = ypos;
+    velocity.x = xvel;
+    velocity.y = yvel;
+    maxspeed = 50;
 }
 
 void ballcollide::update(Vector2 mousepos, bool pressed, bool released) {
-    if (pincircle(mousepos, ballcollide::position, ballcollide::radius) && !held && pressed) {
+    if (pincircle(mousepos, position, radius) && !held && pressed) {
         held = true;
     }
     if (held && released) {
@@ -27,10 +27,6 @@ void ballcollide::update(Vector2 mousepos, bool pressed, bool released) {
 }
 
 void ballcollide::draw() {
-    DrawCircleV(ballcollide::position, radius, BLACK);
-    DrawCircleV(ballcollide::position, radius - 5, DARKBLUE);
-}
-
-float ballcollide::get_r() {
-    return radius;
+    DrawCircleV(position, radius, BLACK);
+    DrawCircleV(position, radius - 5, DARKBLUE);
 }

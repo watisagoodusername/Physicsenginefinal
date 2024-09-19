@@ -13,18 +13,17 @@ protected:
 
 public:
     rigidbody();
+    ~rigidbody() {}
 
     void clicked(Vector2 mousepos, float maxspeed);
 
     void update(Vector2 mousepos);
 
-    void draw();
+    const float get_m() { return mass; };
 
-    float get_m();
+    const Vector2 get_vel() { return velocity; };
 
-    Vector2 get_vel();
-
-    Vector2 get_pos();
+    const Vector2 get_pos() { return position; };
 
     void set_vel(Vector2 v);
 

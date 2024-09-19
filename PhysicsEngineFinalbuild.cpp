@@ -7,82 +7,6 @@
 #include "include/ballcollide.h"
 #include "include/rectcollide.h"
 
-class rectcollider { //class for rect rigidbody
-    float sizex;
-    float sizey;
-    float mass;
-    Vector2 position;
-    Vector2 velocity;
-    bool held = false;
-
-public:
-    rectcollider() {
-        sizex = 0;
-        sizey = 0;
-        mass = 0;
-        position.x = 0;
-        position.y = 0;
-        velocity.x = 0;
-        velocity.y = 0;
-    }
-    rectcollider(float xsize, float ysize, float xpos, float ypos, float m = 1, float xvel = 0, float yvel = 0) {
-        sizex = xsize;
-        sizey = ysize;
-        mass = xsize * ysize * m;
-        position.x = xpos;
-        position.y = ypos;
-        velocity.x = xvel;
-        velocity.y = yvel;
-    }
-
-    void clicked(Vector2 mousepos) {
-        Vector2 dif = Vector2Subtract(mousepos, position);
-        velocity = dif;
-    }
-
-    void update(Vector2 mousepos, bool press, bool release) {
-        if (press) {
-            if (pinrect(mousepos, get_corner(), Vector2{ sizex, sizey })) {
-                held = true;
-            }
-        }
-        if (release) {
-            held = false;
-        }
-        if (held) {
-            clicked(mousepos);
-        }
-        wallbounce(000, 1000, 00, 1000, position, velocity, sizex / 2, sizey / 2);
-        position = Vector2Add(position, velocity);
-    }
-
-    void draw() {
-        DrawRectangle(position.x - sizex / 2, position.y - sizey / 2, sizex, sizey, BLACK);
-    }
-
-    float get_xsize() {
-        return sizex;
-    }
-    float get_ysize() {
-        return sizey;
-    }
-    Vector2 get_vel() {
-        return velocity;
-    }
-    Vector2 get_pos() {
-        return position;
-    }
-    Vector2 get_corner() {
-        Vector2 cornerpos;
-        cornerpos.x = position.x - sizex / 2;
-        cornerpos.y = position.y - sizey / 2;
-        return cornerpos;
-    }
-    void set_vel(Vector2 v) {
-        velocity = v;
-    }
-};
-
 class createobject {//contains information about object to be created 
     Vector2 start;
     Vector2 end;
@@ -130,7 +54,7 @@ public:
 
         return ballcollide(radius(), centre.x, centre.y);
     }
-    rectcollider finishcreationr(Vector2 mousepos) {//creates a rectangle collider
+    /*rectcollider finishcreationr(Vector2 mousepos) {//creates a rectangle collider
         end = mousepos;
         active = false;
 
@@ -142,7 +66,7 @@ public:
         else { centre.y = end.y + s.y / 2; }
 
         return rectcollider(s.x, s.y, centre.x, centre.y);
-    }
+    }*/
     void draw(Vector2 mousepos) {
         if (active) {
             Vector2 pos = get_centre(mousepos);
@@ -234,6 +158,9 @@ int main() {
     bool game = true;
     while (game)
     {
+        float dt = GetFrameTime();
+        int fps = GetFPS();
+
         if (WindowShouldClose()) {
             game = false;
         }
@@ -291,7 +218,7 @@ int main() {
             bodies.at(i).update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
 
-        for (int a = 0; a < 2; a++) {
+        //for (int a = 0; a < 2; a++) {
             for (int i = 0; i < bodycount; i++) {//updates velocities
                 ballcollide* current = &bodies.at(i);
                 if (bodies.size() >= i) {
@@ -302,7 +229,7 @@ int main() {
                     }
                 }
             }
-        }
+        //}
 
         BeginDrawing();
 
@@ -313,6 +240,9 @@ int main() {
         for (int i = 0; i < bodycount; i++) {
             bodies.at(i).draw();
         }
+
+        DrawText(TextFormat("%f", dt), 3, 3, 20, WHITE);
+        DrawText(TextFormat("%i", fps), 950, 3, 20, WHITE);
 
         DrawTexture(wizardshadow, screenwidth - wizard.width, screenheight - wizard.height, CLITERAL(Color){ 0, 0, 0, 64 });
         DrawTexture(wizard, screenwidth - wizard.width, screenheight - wizard.height, WHITE);
