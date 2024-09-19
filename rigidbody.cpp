@@ -25,18 +25,6 @@ void rigidbody::update(Vector2 mousepos) {
     position = Vector2Add(position, velocity);
     wallbounce(0, 1000, 0, 1000, position, velocity, size.x / 2, size.y / 2);
 }
-
-void rigidbody::draw() {
-}
-float rigidbody::get_m() {
-    return mass;
-}
-Vector2 rigidbody::get_vel() {
-    return velocity;
-}
-Vector2 rigidbody::get_pos() {
-    return position;
-}
 void rigidbody::set_vel(Vector2 v) {
     velocity = v;
 }

@@ -1,6 +1,8 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <cmath>
+#include <iostream>
+
 
 bool pincircle(Vector2 ppos, Vector2 cpos, float radius) {// determines if a point is inside a circle
     float xdif = ppos.x - cpos.x;
@@ -9,6 +11,8 @@ bool pincircle(Vector2 ppos, Vector2 cpos, float radius) {// determines if a poi
     if (tdif < radius) {
         return true;
     }
+    
+    
     return false;
 }
 
