@@ -211,6 +211,10 @@ int main() {
         if (IsKeyPressed(KEY_W)) {
             bodies.push_back(ballcollide(GetRandomValue(8, 12), 850, 930, 1750, GetRandomValue(-5, -1), GetRandomValue(-5, -1)));
         }
+        if (IsKeyPressed(KEY_C)) {
+            bodies.clear();
+            bodies.shrink_to_fit();
+        }
 
         size_t bodycount = bodies.size();
 
@@ -225,7 +229,8 @@ int main() {
                     for (int j = i + 1; j < bodycount; j++) {
                         ballcollide* compare = &bodies.at(j);
 
-                        circlecollide(current, compare);
+                        current->ballcollision(compare);
+                        //circlecollide(current, compare);
                     }
                 }
             }

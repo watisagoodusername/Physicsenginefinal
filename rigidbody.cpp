@@ -5,11 +5,11 @@
 #include <raymath.h>
 
 rigidbody::rigidbody() {
-    rigidbody::size = Vector2{ 0, 0 };
-    rigidbody::mass = 0;
-    rigidbody::position = Vector2{ 0, 0 };
-    rigidbody::velocity = Vector2{ 0, 0 };
-    rigidbody::maxspeed = 50;
+    size = Vector2{ 0, 0 };
+    mass = 0;
+    position = Vector2{ 0, 0 };
+    velocity = Vector2{ 0, 0 };
+    maxspeed = 50;
 }
     
 void rigidbody::clicked(Vector2 mousepos, float maxspeed) {
@@ -20,7 +20,7 @@ void rigidbody::clicked(Vector2 mousepos, float maxspeed) {
 
 void rigidbody::update(Vector2 mousepos) {
     if (held) {
-        clicked(mousepos, rigidbody::maxspeed);
+        clicked(mousepos,maxspeed);
     }
     position = Vector2Add(position, velocity);
     wallbounce(0, 1000, 0, 1000, position, velocity, size.x / 2, size.y / 2);

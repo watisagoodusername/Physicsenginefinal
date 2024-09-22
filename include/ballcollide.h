@@ -8,6 +8,8 @@ class ballcollide : public rigidbody
 public:
     ballcollide(float r, float xpos, float ypos, float m = 1, float xvel = 0, float yvel = 0);
 
+    void ballcollision(ballcollide* compare);
+
     void update(Vector2 mousepos, bool press, bool release);
 
     void draw();

@@ -1,24 +1,12 @@
 #include "include/rectcollide.h"
+#include "include/rigidbody.h"
+#include "raylib.h"
 
-/* FOR LATER
-class rectcollider { //class for rect rigidbody
+class rectcollider: public rigidbody { //class for rect rigidbody
     float sizex;
     float sizey;
-    float mass;
-    Vector2 position;
-    Vector2 velocity;
-    bool held = false;
 
 public:
-    rectcollider() {
-        sizex = 0;
-        sizey = 0;
-        mass = 0;
-        position.x = 0;
-        position.y = 0;
-        velocity.x = 0;
-        velocity.y = 0;
-    }
     rectcollider(float xsize, float ysize, float xpos, float ypos, float m = 1, float xvel = 0, float yvel = 0) {
         sizex = xsize;
         sizey = ysize;
@@ -76,4 +64,3 @@ public:
         velocity = v;
     }
 };
-*/
