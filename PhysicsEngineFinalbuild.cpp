@@ -106,35 +106,6 @@ public:
     }
 };
 
-static void circlecollide(ballcollide* current, ballcollide* compare) {
-    Vector2 p1 = current->get_pos();
-    Vector2 p2 = compare->get_pos();// position values
-
-    float r1 = current->get_r();
-    float r2 = compare->get_r();
-
-    if (circleoverlap(p1, p2, r1, r2)) {
-        Vector2 dif = Vector2Subtract(p1, p2);// distance between circles
-
-        float angle = atan2(dif.x, dif.y);
-
-        Vector2 v1 = current->get_vel();
-        Vector2 v2 = compare->get_vel(); //velocity values, passed by value
-
-        float m1 = current->get_m();
-        float m2 = compare->get_m();// mass
-
-        bounce(v1, v2, m1, m2, angle, 0.95);//velocity calculations
-        resolvecirclecollision(p1, p2, r1, r2, m1, m2);//changes p1 and p2 so they arent inside each other
-
-        current->set_pos(p1);
-        compare->set_pos(p2);//applies position
-
-        current->set_vel(v1);
-        compare->set_vel(v2);//applies velocity
-    }
-}
-
 int main() {
 
     int screenwidth = 1000;
@@ -146,9 +117,11 @@ int main() {
     createobject ct("ball");
 
     std::vector<ballcollide> balls = { ballcollide(20, 50, 50, 1, 5, 4) };
-    std::vector<rectcollide> boxes = { rectcollide(20, 20, 500, 500, 1, -2, 3)};
+    std::vector<rectcollide> boxes = { rectcollide(20, 20, 500, 500, 1, -2, 3) };
     balls.shrink_to_fit();
     boxes.shrink_to_fit();
+    int ballcount = balls.size();
+    int boxcount = boxes.size();
 
     Image wizardimg = LoadImage("Resources/Wizardofphysics.png"); // Loaded in CPU memory (RAM)
     Image wizardimg2 = LoadImage("Resources/Wizardofphysics.png");
@@ -187,9 +160,11 @@ int main() {
             if (ct.active) {
                 if (ct.objecttype == "ball") {
                     balls.push_back(ct.finishcreationb(mousepos));
+                    ballcount = balls.size();
                 }
                 else if (ct.objecttype == "rect") {
                     boxes.push_back(ct.finishcreationr(mousepos));
+                    boxcount = boxes.size();
                 }
 
             }
@@ -213,42 +188,42 @@ int main() {
             for (int i = 0; i < 5; i++) {
                 balls.push_back(ballcollide(GetRandomValue(34, 70), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
+            ballcount = balls.size();
         }
         if (IsKeyPressed(KEY_B)) {
             for (int i = 0; i < 1500; i++) {
                 balls.push_back(ballcollide(GetRandomValue(8, 12), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
+            ballcount = balls.size();
         }
         if (IsKeyPressed(KEY_W)) {
             balls.push_back(ballcollide(GetRandomValue(8, 12), 850, 930, 1750, GetRandomValue(-5, -1), GetRandomValue(-5, -1)));
+            ballcount = balls.size();
         }
         if (IsKeyPressed(KEY_C)) {
             balls.clear();
+            boxes.clear();
             balls.shrink_to_fit();
+            boxes.shrink_to_fit();
+            ballcount = balls.size();
+            boxcount = boxes.size();
         }
 
-        size_t bodycount = balls.size();
-
-        for (int i = 0; i < bodycount; i++) {//update every rigidbody
+        for (int i = 0; i < ballcount; i++) {//update every rigidbody
             balls.at(i).update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
-        for (int i = 0; i < bodycount; i++) {//update every rigidbody
+        for (int i = 0; i < boxcount; i++) {//update every rigidbody
             boxes.at(i).update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
 
-        //for (int a = 0; a < 2; a++) {
-            for (int i = 0; i < bodycount; i++) {//updates velocities
-                ballcollide* current = &balls.at(i);
-                if (balls.size() >= i) {
-                    for (int j = i + 1; j < bodycount; j++) {
-                        ballcollide* compare = &balls.at(j);
+        for (int i = 0; i < ballcount - 1; i++) {//updates velocities
+            ballcollide* current = &balls.at(i);
+            for (int j = i + 1; j < balls.size(); j++) {
+                ballcollide* compare = &balls.at(j);
 
-                        current->ballcollision(compare);
-                        //circlecollide(current, compare);
-                    }
-                }
+                current->ballcollision(compare);
             }
-        //}
+        }
 
         BeginDrawing();
 
@@ -256,10 +231,10 @@ int main() {
 
             ct.draw(mousepos);
 
-            for (int i = 0; i < bodycount; i++) {
+            for (int i = 0; i < ballcount; i++) {
                 balls.at(i).draw();
             }
-            for (int i = 0; i < bodycount; i++) {
+            for (int i = 0; i < boxcount; i++) {
                 boxes.at(i).draw();
             }
 
