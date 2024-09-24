@@ -41,6 +41,7 @@ public:
         start = mousepos;
         active = true;
     }
+
     ballcollide finishcreationb(Vector2 mousepos) {//creates a ball collider
         end = mousepos;
         active = false;
@@ -54,7 +55,8 @@ public:
 
         return ballcollide(radius(), centre.x, centre.y);
     }
-    /*rectcollider finishcreationr(Vector2 mousepos) {//creates a rectangle collider
+
+    rectcollide finishcreationr(Vector2 mousepos) {//creates a rectangle collider
         end = mousepos;
         active = false;
 
@@ -65,8 +67,9 @@ public:
         if (start.y < end.y) { centre.y = start.y + s.y / 2; }
         else { centre.y = end.y + s.y / 2; }
 
-        return rectcollider(s.x, s.y, centre.x, centre.y);
-    }*/
+        return rectcollide(s.x, s.y, centre.x, centre.y);
+    }
+
     void draw(Vector2 mousepos) {
         if (active) {
             Vector2 pos = get_centre(mousepos);
@@ -84,6 +87,7 @@ public:
     Vector2 get_start() {
         return start;
     }
+
     Vector2 get_centre(Vector2 mousepos) {//center position for circle creation
         end = mousepos;
 
@@ -96,6 +100,7 @@ public:
 
         return centre;
     }
+
     std::string get_object() {
         return objecttype;
     }
@@ -140,8 +145,10 @@ int main() {
 
     createobject ct("ball");
 
-    std::vector<ballcollide> bodies = { ballcollide(20, 50, 50, 1, 5, 4) };
-    bodies.shrink_to_fit();
+    std::vector<ballcollide> balls = { ballcollide(20, 50, 50, 1, 5, 4) };
+    std::vector<rectcollide> boxes = { rectcollide(20, 20, 500, 500, 1, -2, 3)};
+    balls.shrink_to_fit();
+    boxes.shrink_to_fit();
 
     Image wizardimg = LoadImage("Resources/Wizardofphysics.png"); // Loaded in CPU memory (RAM)
     Image wizardimg2 = LoadImage("Resources/Wizardofphysics.png");
@@ -179,8 +186,12 @@ int main() {
         if (IsMouseButtonReleased(1)) {
             if (ct.active) {
                 if (ct.objecttype == "ball") {
-                    bodies.push_back(ct.finishcreationb(mousepos));
+                    balls.push_back(ct.finishcreationb(mousepos));
                 }
+                else if (ct.objecttype == "rect") {
+                    boxes.push_back(ct.finishcreationr(mousepos));
+                }
+
             }
         }
         if (IsMouseButtonPressed(2)) {
@@ -194,40 +205,43 @@ int main() {
 
         if (IsKeyPressed(KEY_SPACE)) {
             for (int i = 0; i < 795; i++) {
-                bodies.push_back(ballcollide(GetRandomValue(3, 14), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+                balls.push_back(ballcollide(GetRandomValue(3, 14), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
             for (int i = 0; i < 200; i++) {
-                bodies.push_back(ballcollide(GetRandomValue(14, 34), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+                balls.push_back(ballcollide(GetRandomValue(14, 34), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
             for (int i = 0; i < 5; i++) {
-                bodies.push_back(ballcollide(GetRandomValue(34, 70), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+                balls.push_back(ballcollide(GetRandomValue(34, 70), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
         }
         if (IsKeyPressed(KEY_B)) {
             for (int i = 0; i < 1500; i++) {
-                bodies.push_back(ballcollide(GetRandomValue(8, 12), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+                balls.push_back(ballcollide(GetRandomValue(8, 12), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
         }
         if (IsKeyPressed(KEY_W)) {
-            bodies.push_back(ballcollide(GetRandomValue(8, 12), 850, 930, 1750, GetRandomValue(-5, -1), GetRandomValue(-5, -1)));
+            balls.push_back(ballcollide(GetRandomValue(8, 12), 850, 930, 1750, GetRandomValue(-5, -1), GetRandomValue(-5, -1)));
         }
         if (IsKeyPressed(KEY_C)) {
-            bodies.clear();
-            bodies.shrink_to_fit();
+            balls.clear();
+            balls.shrink_to_fit();
         }
 
-        size_t bodycount = bodies.size();
+        size_t bodycount = balls.size();
 
         for (int i = 0; i < bodycount; i++) {//update every rigidbody
-            bodies.at(i).update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+            balls.at(i).update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+        }
+        for (int i = 0; i < bodycount; i++) {//update every rigidbody
+            boxes.at(i).update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
 
         //for (int a = 0; a < 2; a++) {
             for (int i = 0; i < bodycount; i++) {//updates velocities
-                ballcollide* current = &bodies.at(i);
-                if (bodies.size() >= i) {
+                ballcollide* current = &balls.at(i);
+                if (balls.size() >= i) {
                     for (int j = i + 1; j < bodycount; j++) {
-                        ballcollide* compare = &bodies.at(j);
+                        ballcollide* compare = &balls.at(j);
 
                         current->ballcollision(compare);
                         //circlecollide(current, compare);
@@ -238,19 +252,22 @@ int main() {
 
         BeginDrawing();
 
-        ClearBackground(LIGHTGRAY);
+            ClearBackground(LIGHTGRAY);
 
-        ct.draw(mousepos);
+            ct.draw(mousepos);
 
-        for (int i = 0; i < bodycount; i++) {
-            bodies.at(i).draw();
-        }
+            for (int i = 0; i < bodycount; i++) {
+                balls.at(i).draw();
+            }
+            for (int i = 0; i < bodycount; i++) {
+                boxes.at(i).draw();
+            }
 
-        DrawText(TextFormat("%f", dt), 3, 3, 20, WHITE);
-        DrawText(TextFormat("%i", fps), 950, 3, 20, WHITE);
+            DrawText(TextFormat("%f", dt), 3, 3, 20, WHITE);
+            DrawText(TextFormat("%i", fps), 950, 3, 20, WHITE);
 
-        DrawTexture(wizardshadow, screenwidth - wizard.width, screenheight - wizard.height, CLITERAL(Color){ 0, 0, 0, 64 });
-        DrawTexture(wizard, screenwidth - wizard.width, screenheight - wizard.height, WHITE);
+            DrawTexture(wizardshadow, screenwidth - wizard.width, screenheight - wizard.height, CLITERAL(Color){ 0, 0, 0, 64 });
+            DrawTexture(wizard, screenwidth - wizard.width, screenheight - wizard.height, WHITE);
 
         EndDrawing();
     }
