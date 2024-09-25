@@ -25,6 +25,15 @@ bool pinrect(Vector2 ppos, Vector2 cpos, Vector2 size) {// determines if a point
     return false;
 }
 
+bool rectoverlap(Vector2 pos1, Vector2 pos2, Vector2 size1, Vector2 size2) {// determines if a point is inside a rectangle
+    float xdif = pos1.x - pos2.x;
+    float ydif = pos1.y - pos2.y;
+    if (-(size1.x + size2.x) / 2 < xdif and xdif < (size1.x + size2.x) / 2 and -(size1.y + size2.y) / 2 < ydif and ydif < (size1.y + size2.y) / 2) {
+        return true;
+    }
+    return false;
+}
+
 bool circleoverlap(Vector2 pos1, Vector2 pos2, float rad1, float rad2) {
     /*float xdif = pos1.x - pos2.x;
     float ydif = pos1.y - pos2.y;

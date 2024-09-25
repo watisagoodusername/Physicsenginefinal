@@ -5,7 +5,6 @@
 
 ballcollide::ballcollide(float r, float xpos, float ypos, float m, float xvel, float yvel) {
     radius = r;
-    size = Vector2{ r * 2, r * 2 };
     mass = 3 * r * r * m;
     position.x = xpos;
     position.y = ypos;
@@ -53,6 +52,8 @@ void ballcollide::update(Vector2 mousepos, bool pressed, bool released) {
     }
 
     rigidbody::update(mousepos);
+
+    wallbounce(0, 1000, 0, 1000, position, velocity, radius, radius);
 }
 
 void ballcollide::draw() {

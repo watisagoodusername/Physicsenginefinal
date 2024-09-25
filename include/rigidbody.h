@@ -5,7 +5,6 @@ class rigidbody
 {
 protected:
     float mass;
-    Vector2 size;
     Vector2 velocity;
     Vector2 position;
     bool held = false;

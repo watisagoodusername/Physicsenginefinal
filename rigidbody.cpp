@@ -5,7 +5,6 @@
 #include <raymath.h>
 
 rigidbody::rigidbody() {
-    size = Vector2{ 0, 0 };
     mass = 0;
     position = Vector2{ 0, 0 };
     velocity = Vector2{ 0, 0 };
@@ -23,7 +22,6 @@ void rigidbody::update(Vector2 mousepos) {
         clicked(mousepos,maxspeed);
     }
     position = Vector2Add(position, velocity);
-    wallbounce(0, 1000, 0, 1000, position, velocity, size.x / 2, size.y / 2);
 }
 void rigidbody::set_vel(Vector2 v) {
     velocity = v;
