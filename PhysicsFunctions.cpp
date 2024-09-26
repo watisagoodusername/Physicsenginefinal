@@ -1,6 +1,8 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <cmath>
+#include <iostream>
+
 
 bool pincircle(Vector2 ppos, Vector2 cpos, float radius) {// determines if a point is inside a circle
     float xdif = ppos.x - cpos.x;
@@ -9,6 +11,8 @@ bool pincircle(Vector2 ppos, Vector2 cpos, float radius) {// determines if a poi
     if (tdif < radius) {
         return true;
     }
+    
+    
     return false;
 }
 
@@ -16,6 +20,15 @@ bool pinrect(Vector2 ppos, Vector2 cpos, Vector2 size) {// determines if a point
     float xdif = ppos.x - cpos.x;
     float ydif = ppos.y - cpos.y;
     if (-size.x / 2 < xdif and xdif < size.x / 2 and -size.y / 2 < ydif and ydif < size.y / 2) {
+        return true;
+    }
+    return false;
+}
+
+bool rectoverlap(Vector2 pos1, Vector2 pos2, Vector2 size1, Vector2 size2) {// determines if a point is inside a rectangle
+    float xdif = pos1.x - pos2.x;
+    float ydif = pos1.y - pos2.y;
+    if (-(size1.x + size2.x) / 2 < xdif and xdif < (size1.x + size2.x) / 2 and -(size1.y + size2.y) / 2 < ydif and ydif < (size1.y + size2.y) / 2) {
         return true;
     }
     return false;

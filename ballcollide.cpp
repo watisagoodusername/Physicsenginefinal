@@ -4,18 +4,50 @@
 #include "include/PhysicsFunctions.h"
 
 ballcollide::ballcollide(float r, float xpos, float ypos, float m, float xvel, float yvel) {
-    ballcollide::radius = r;
-    ballcollide::size = Vector2{ r * 2, r * 2 };
-    ballcollide::mass = 3 * r * r * m;
-    ballcollide::position.x = xpos;
-    ballcollide::position.y = ypos;
-    ballcollide::velocity.x = xvel;
-    ballcollide::velocity.y = yvel;
-    ballcollide::maxspeed = 25;
+    radius = r;
+    mass = 3 * r * r * m;
+    position.x = xpos;
+    position.y = ypos;
+    velocity.x = xvel;
+    velocity.y = yvel;
+    maxspeed = 50;
+}
+
+ballcollide::~ballcollide() {
+
+}
+
+void ballcollide::ballcollision(ballcollide* compare) {
+    Vector2 p1 = position;
+    Vector2 p2 = compare->get_pos();// position values
+
+    float r1 = radius;
+    float r2 = compare->get_r();
+
+    if (circleoverlap(p1, p2, r1, r2)) {
+        Vector2 dif = Vector2Subtract(p1, p2);// distance between circles
+
+        float angle = atan2(dif.x, dif.y);
+
+        Vector2 v1 = velocity;
+        Vector2 v2 = compare->get_vel(); //velocity values, passed by value
+
+        float m1 = mass;
+        float m2 = compare->get_m();// mass
+
+        bounce(v1, v2, m1, m2, angle, 0.95);//velocity calculations
+        resolvecirclecollision(p1, p2, r1, r2, m1, m2);//changes p1 and p2 so they arent inside each other
+
+        position = p1;
+        compare->set_pos(p2);//applies position
+
+        velocity = v1;
+        compare->set_vel(v2);//applies velocity
+    }
 }
 
 void ballcollide::update(Vector2 mousepos, bool pressed, bool released) {
-    if (pincircle(mousepos, ballcollide::position, ballcollide::radius) && !held && pressed) {
+    if (pincircle(mousepos, position, radius) && !held && pressed) {
         held = true;
     }
     if (held && released) {
@@ -24,13 +56,11 @@ void ballcollide::update(Vector2 mousepos, bool pressed, bool released) {
     }
 
     rigidbody::update(mousepos);
+
+    wallbounce(0, 1000, 0, 1000, position, velocity, radius, radius);
 }
 
 void ballcollide::draw() {
-    DrawCircleV(ballcollide::position, radius, BLACK);
-    DrawCircleV(ballcollide::position, radius - 5, DARKBLUE);
-}
-
-float ballcollide::get_r() {
-    return radius;
+    DrawCircleV(position, radius, BLACK);
+    DrawCircleV(position, radius - 5, DARKBLUE);
 }

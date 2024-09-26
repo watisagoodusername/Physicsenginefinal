@@ -4,6 +4,8 @@ bool pincircle(Vector2 ppos, Vector2 cpos, float radius);
 
 bool pinrect(Vector2 ppos, Vector2 cpos, Vector2 size);
 
+bool rectoverlap(Vector2 pos1, Vector2 pos2, Vector2 size1, Vector2 size2);
+
 bool circleoverlap(Vector2 pos1, Vector2 pos2, float rad1, float rad2);
 
 void resolvecirclecollision(Vector2& pos1, Vector2& pos2, float r1, float r2, float m1, float m2);
