@@ -6,10 +6,7 @@ class ballcollide : public rigidbody
     float radius;
 
 public:
-    ballcollide() {}
     ballcollide(float r, float xpos, float ypos, float m = 1, float xvel = 0, float yvel = 0);
-
-    ~ballcollide();
 
     void ballcollision(ballcollide* compare);
 

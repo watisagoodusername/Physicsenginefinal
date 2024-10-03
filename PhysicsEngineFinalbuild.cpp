@@ -17,9 +17,7 @@ int main() {
 
     createobject ct("ball");
 
-    std::vector<rigidbody*> rigidBodies;
-    rigidBodies.push_back(new ballcollide(20, 20, 50, 1, 5, 4));
-    std::vector<ballcollide*>  balls = { new ballcollide(20, 50, 50, 1, 5, 4) };
+    std::vector<ballcollide> balls = { ballcollide(20, 50, 50, 1, 5, 4) };
     std::vector<rectcollide> boxes = { rectcollide(20, 20, 500, 500, 1, -2, 3) };
     balls.shrink_to_fit();
     boxes.shrink_to_fit();
@@ -62,7 +60,7 @@ int main() {
         if (IsMouseButtonReleased(1)) {
             if (ct.active) {
                 if (ct.objecttype == "ball") {
-                    //balls.push_back(ct.finishcreationb(mousepos));
+                    balls.push_back(ct.finishcreationb(mousepos));
                     ballcount = balls.size();
                 }
                 else if (ct.objecttype == "rect") {
@@ -83,37 +81,35 @@ int main() {
 
         if (IsKeyPressed(KEY_SPACE)) {
             for (int i = 0; i < 795; i++) {
-                balls.push_back(new ballcollide(GetRandomValue(3, 14), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+                balls.push_back(ballcollide(GetRandomValue(3, 14), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
             for (int i = 0; i < 200; i++) {
-                //balls.push_back(ballcollide(GetRandomValue(14, 34), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+                balls.push_back(ballcollide(GetRandomValue(14, 34), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
             for (int i = 0; i < 5; i++) {
-                //balls.push_back(ballcollide(GetRandomValue(34, 70), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+                balls.push_back(ballcollide(GetRandomValue(34, 70), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
             ballcount = balls.size();
         }
-
-        // -------------------------------------------- +
         if (IsKeyPressed(KEY_B)) {
             for (int i = 0; i < 1500; i++) {
-                balls.push_back(new ballcollide(GetRandomValue(8, 12), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+                balls.push_back(ballcollide(GetRandomValue(11, 13), GetRandomValue(10, 990), GetRandomValue(10, 990)));
             }
             ballcount = balls.size();
         }
+        if (IsKeyPressed(KEY_S)) {
+            for (int i = 0; i < 1500; i++) {
+                boxes.push_back(rectcollide(GetRandomValue(13, 15), GetRandomValue(13, 15), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+            }
+            boxcount = boxes.size();
+        }
         if (IsKeyPressed(KEY_W)) {
-            //balls.push_back(ballcollide(GetRandomValue(8, 12), 850, 930, 1750, GetRandomValue(-5, -1), GetRandomValue(-5, -1)));
+            balls.push_back(ballcollide(GetRandomValue(8, 12), 850, 930, 1750, GetRandomValue(-5, -1), GetRandomValue(-5, -1)));
             ballcount = balls.size();
         }
         if (IsKeyPressed(KEY_C)) {
-            std::cout << balls.size() << std::endl;
-            for (ballcollide* b : balls) {
-                delete b;
-                b = nullptr;
-            }
             balls.clear();
             boxes.clear();
-            std::cout << balls.size() << std::endl;
             balls.shrink_to_fit();
             boxes.shrink_to_fit();
             ballcount = balls.size();
@@ -121,16 +117,16 @@ int main() {
         }
 
         for (int i = 0; i < ballcount; i++) {//update every rigidbody
-            balls.at(i)->update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+            balls.at(i).update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
         for (int i = 0; i < boxcount; i++) {//update every rigidbody
             boxes.at(i).update(mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
 
         for (int i = 0; i < ballcount - 1; i++) {//updates velocities
-            ballcollide* current = balls.at(i);
+            ballcollide* current = &balls.at(i);
             for (int j = i + 1; j < balls.size(); j++) {
-                ballcollide* compare = balls.at(j);
+                ballcollide* compare = &balls.at(j);
 
                 current->ballcollision(compare);
             }
@@ -151,15 +147,11 @@ int main() {
             ct.draw(mousepos);
 
             for (int i = 0; i < ballcount; i++) {
-                balls.at(i)->draw();
+                balls.at(i).draw();
             }
             for (int i = 0; i < boxcount; i++) {
                 boxes.at(i).draw();
             }
-            for (rigidbody* r : rigidBodies) {
-                static_cast<ballcollide*>(r)->draw();
-            }
-            
 
             DrawText(TextFormat("%f", dt), 3, 3, 20, WHITE);
             DrawText(TextFormat("%i", fps), 950, 3, 20, WHITE);
@@ -169,12 +161,6 @@ int main() {
 
         EndDrawing();
     }
-
-    for (rigidbody* r : rigidBodies) {
-        delete r;
-        r = nullptr;
-    }
-    balls.clear();
 
     UnloadTexture(wizard);
     UnloadTexture(wizardshadow);

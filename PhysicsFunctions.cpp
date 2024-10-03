@@ -65,15 +65,19 @@ void resolvecirclecollision(Vector2& pos1, Vector2& pos2, float r1, float r2, fl
     pos2.y -= ydif * tomove2;
 }
 
-void bounce(Vector2& vel1, Vector2& vel2, float m1, float m2, float angle, float restitution) {
+void bounce1D(float& vel1, float& vel2, float m1, float m2, float restitution) {
+    float v1 = (restitution * m2 * (vel2 - vel1) + m1 * vel1 + m2 * vel2) / (m1 + m2);
+    float v2 = (restitution * m1 * (vel1 - vel2) + m2 * vel2 + m1 * vel1) / (m2 + m1);//final velocity calculations for 1D inelastic collisions
+
+    vel1 = v1;
+    vel2 = v2;
+}
+
+void bounce2D(Vector2& vel1, Vector2& vel2, float m1, float m2, float angle, float restitution) {
     Vector2 rotatedv1 = Vector2Rotate(vel1, angle);
     Vector2 rotatedv2 = Vector2Rotate(vel2, angle);//rotates points so x axis is normal to makle calculations easier
 
-    float v1 = (restitution * m2 * (rotatedv2.y - rotatedv1.y) + m1 * rotatedv1.y + m2 * rotatedv2.y) / (m1 + m2);
-    float v2 = (restitution * m1 * (rotatedv1.y - rotatedv2.y) + m2 * rotatedv2.y + m1 * rotatedv1.y) / (m2 + m1);//final velocity calculations for 1D inelastic collisions
-
-    rotatedv1.y = v1;
-    rotatedv2.y = v2;
+    bounce1D(rotatedv1.y, rotatedv2.y, m1, m2, restitution);
 
     vel1 = Vector2Rotate(rotatedv1, -angle);
     vel2 = Vector2Rotate(rotatedv2, -angle);//return updated velocities

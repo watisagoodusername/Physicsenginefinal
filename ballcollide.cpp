@@ -13,10 +13,6 @@ ballcollide::ballcollide(float r, float xpos, float ypos, float m, float xvel, f
     maxspeed = 50;
 }
 
-ballcollide::~ballcollide() {
-
-}
-
 void ballcollide::ballcollision(ballcollide* compare) {
     Vector2 p1 = position;
     Vector2 p2 = compare->get_pos();// position values
@@ -35,7 +31,7 @@ void ballcollide::ballcollision(ballcollide* compare) {
         float m1 = mass;
         float m2 = compare->get_m();// mass
 
-        bounce(v1, v2, m1, m2, angle, 0.95);//velocity calculations
+        bounce2D(v1, v2, m1, m2, angle, 0.95);//velocity calculations
         resolvecirclecollision(p1, p2, r1, r2, m1, m2);//changes p1 and p2 so they arent inside each other
 
         position = p1;

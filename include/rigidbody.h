@@ -9,6 +9,7 @@ protected:
     Vector2 position;
     bool held = false;
     int maxspeed;
+    bool active = true;
 
 public:
     rigidbody();
