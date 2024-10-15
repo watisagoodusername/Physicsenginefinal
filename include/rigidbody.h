@@ -10,6 +10,11 @@ protected:
     bool held = false;
     int maxspeed;
     bool active = true;
+    bool colliding = false; 
+    bool grounded = false;
+
+    Vector2 changevelocity;
+    Vector2 changeposition;
 
 public:
     rigidbody();
@@ -17,7 +22,9 @@ public:
 
     void clicked(Vector2 mousepos, float maxspeed);
 
-    void update(Vector2 mousepos);
+    void update(Vector2 gravity, Vector2 mousepos);
+
+    void applychanges();
 
     const float get_m() { return mass; };
 
@@ -29,5 +36,10 @@ public:
 
     void set_pos(Vector2 p);
 
+    bool get_ground() { return grounded; };
+
+    void set_ground(bool g) { grounded = g; };
+
+    void set_collide(bool t) { colliding = t; };
 };
 

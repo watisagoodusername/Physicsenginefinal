@@ -12,6 +12,8 @@ private:
 
     Vector2 size();
 
+    float minsize = 3;
+
 public:
     bool active;
     std::string objecttype;
@@ -26,7 +28,7 @@ public:
 
     rectcollide finishcreationr(Vector2 mousepos);
 
-    void draw(Vector2 mousepos);
+    void draw(Vector2 mousepos, camera cam);
 
     Vector2 get_start() { return start; }
 

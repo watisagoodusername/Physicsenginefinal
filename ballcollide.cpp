@@ -2,6 +2,7 @@
 #include "include/rigidbody.h"
 #include <raylib.h>
 #include "include/PhysicsFunctions.h"
+#include "include/camera.h"
 
 ballcollide::ballcollide(float r, float xpos, float ypos, float m, float xvel, float yvel) {
     radius = r;
@@ -13,7 +14,7 @@ ballcollide::ballcollide(float r, float xpos, float ypos, float m, float xvel, f
     maxspeed = 50;
 }
 
-void ballcollide::ballcollision(ballcollide* compare) {
+void ballcollide::ballcollision(ballcollide* compare, Vector2 gravity) {
     Vector2 p1 = position;
     Vector2 p2 = compare->get_pos();// position values
 
@@ -21,6 +22,11 @@ void ballcollide::ballcollision(ballcollide* compare) {
     float r2 = compare->get_r();
 
     if (circleoverlap(p1, p2, r1, r2)) {
+        if (grounded) {
+            compare->set_ground(true);
+        }
+        grounded = compare->get_ground();
+
         Vector2 dif = Vector2Subtract(p1, p2);// distance between circles
 
         float angle = atan2(dif.x, dif.y);
@@ -32,17 +38,18 @@ void ballcollide::ballcollision(ballcollide* compare) {
         float m2 = compare->get_m();// mass
 
         bounce2D(v1, v2, m1, m2, angle, 0.95);//velocity calculations
-        resolvecirclecollision(p1, p2, r1, r2, m1, m2);//changes p1 and p2 so they arent inside each other
+        resolvecirclecollision(p1, p2, r1, r2, m1, m2, v1, v2);//changes p1 and p2 so they arent inside each other
 
-        position = p1;
+        set_pos(p1);
         compare->set_pos(p2);//applies position
 
         velocity = v1;
         compare->set_vel(v2);//applies velocity
     }
+
 }
 
-void ballcollide::update(Vector2 mousepos, bool pressed, bool released) {
+void ballcollide::update(Vector2 gravity, Vector2 mousepos, bool pressed, bool released) {
     if (pincircle(mousepos, position, radius) && !held && pressed) {
         held = true;
     }
@@ -51,12 +58,15 @@ void ballcollide::update(Vector2 mousepos, bool pressed, bool released) {
         velocity = Vector2ClampValue(velocity, 0, maxspeed);
     }
 
-    rigidbody::update(mousepos);
+    wallbounce(0, 1000, 0, 1000, position, velocity, radius, radius, grounded);
 
-    wallbounce(0, 1000, 0, 1000, position, velocity, radius, radius);
+    rigidbody::update(gravity, mousepos);
 }
 
-void ballcollide::draw() {
-    DrawCircleV(position, radius, BLACK);
-    DrawCircleV(position, radius - 5, DARKBLUE);
+void ballcollide::draw(camera cam) {
+    Vector2 pos = cam.worldtocamspace(position);
+    float r = cam.rescale(radius);
+
+    DrawCircleV(pos, r, BLACK);
+    DrawCircleV(pos, r - 5, DARKBLUE);
 }

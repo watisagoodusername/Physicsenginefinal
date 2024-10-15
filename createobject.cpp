@@ -1,4 +1,5 @@
 #include "include/createobject.h"
+#include "include/camera.h"
 
 Vector2 createobject::size() {
     Vector2 s;
@@ -33,12 +34,17 @@ ballcollide createobject::finishcreationb(Vector2 mousepos) {//creates a ball co
 
     Vector2 s = size();
 
-    if (start.x < end.x) { centre.x = start.x + s.x / 2; }
-    else { centre.x = end.x + s.x / 2; }
-    if (start.y < end.y) { centre.y = start.y + s.y / 2; }
-    else { centre.y = end.y + s.y / 2; }
+    if (s.x >= minsize and s.y >= minsize) {
+        if (start.x < end.x) { centre.x = start.x + s.x / 2; }
+        else { centre.x = end.x + s.x / 2; }
+        if (start.y < end.y) { centre.y = start.y + s.y / 2; }
+        else { centre.y = end.y + s.y / 2; }
 
-    return ballcollide(radius(), centre.x, centre.y);
+        return ballcollide(radius(), centre.x, centre.y);
+    }
+    else {
+        active = false;
+    }
 }
 
 rectcollide createobject::finishcreationr(Vector2 mousepos) {//creates a rectangle collider
@@ -47,24 +53,36 @@ rectcollide createobject::finishcreationr(Vector2 mousepos) {//creates a rectang
 
     Vector2 s = size();
 
-    if (start.x < end.x) { centre.x = start.x + s.x / 2; }
-    else { centre.x = end.x + s.x / 2; }
-    if (start.y < end.y) { centre.y = start.y + s.y / 2; }
-    else { centre.y = end.y + s.y / 2; }
+    if (s.x >= minsize and s.y >= minsize) {
+        if (start.x < end.x) { centre.x = start.x + s.x / 2; }
+        else { centre.x = end.x + s.x / 2; }
+        if (start.y < end.y) { centre.y = start.y + s.y / 2; }
+        else { centre.y = end.y + s.y / 2; }
 
-    return rectcollide(s.x, s.y, centre.x, centre.y);
+        return rectcollide(s.x, s.y, centre.x, centre.y);
+    }
+    else {
+        active = false;
+    }
 }
 
-void createobject::draw(Vector2 mousepos) {
+void createobject::draw(Vector2 mousepos, camera cam) {
     if (active) {
         Vector2 pos = get_centre(mousepos);
         if (objecttype == "ball") {
-            DrawCircleV(pos, radius(), DARKGRAY);
+            pos = cam.worldtocamspace(pos);
+            float r = cam.rescale(radius());
+
+            DrawCircleV(pos, r, DARKGRAY);
         }
         else {
-            pos.x -= static_cast<int>((mousepos.x - get_start().x) / 2);
-            pos.y -= static_cast<int>((mousepos.y - get_start().y) / 2);
-            DrawRectangle(pos.x, pos.y, static_cast<int>(mousepos.x - get_start().x), static_cast<int>(mousepos.y - get_start().y), DARKGRAY);
+            pos = cam.worldtocamspace(pos);
+            float xsize = cam.rescale(mousepos.x - get_start().x);
+            float ysize = cam.rescale(mousepos.y - get_start().y);
+
+            pos.x -= xsize / 2;
+            pos.y -= ysize / 2;
+            DrawRectangle(pos.x, pos.y, xsize, ysize, DARKGRAY);
         }
     }
 }

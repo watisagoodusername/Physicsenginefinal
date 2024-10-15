@@ -12,7 +12,6 @@ bool pincircle(Vector2 ppos, Vector2 cpos, float radius) {// determines if a poi
         return true;
     }
     
-    
     return false;
 }
 
@@ -35,16 +34,13 @@ bool rectoverlap(Vector2 pos1, Vector2 pos2, Vector2 size1, Vector2 size2) {// d
 }
 
 bool circleoverlap(Vector2 pos1, Vector2 pos2, float rad1, float rad2) {
-    /*float xdif = pos1.x - pos2.x;
-    float ydif = pos1.y - pos2.y;
-    float tdif = sqrt(xdif * xdif + ydif * ydif);//distance between points*/
     if (Vector2Distance(pos1, pos2) < rad1 + rad2) {
         return true;
     }
     return false;
 }
 
-void resolvecirclecollision(Vector2& pos1, Vector2& pos2, float r1, float r2, float m1, float m2) {//move circles outside eachother
+void resolvecirclecollision(Vector2& pos1, Vector2& pos2, float r1, float r2, float m1, float m2, Vector2 v1, Vector2 v2) {//move circles outside eachother
     float xdif = pos1.x - pos2.x;
     float ydif = pos1.y - pos2.y;
     float tdif = sqrt(xdif * xdif + ydif * ydif);//distance between points
@@ -83,7 +79,7 @@ void bounce2D(Vector2& vel1, Vector2& vel2, float m1, float m2, float angle, flo
     vel2 = Vector2Rotate(rotatedv2, -angle);//return updated velocities
 }
 
-void wallbounce(int lowx, int highx, int lowy, int highy, Vector2& pos, Vector2& vel, float xdistance, float ydistance) {
+void wallbounce(int lowx, int highx, int lowy, int highy, Vector2& pos, Vector2& vel, float xdistance, float ydistance, bool& g) {
     //takes an object size xdistance by ydistance and reflects velocity if outside x/y bounds
 
     if (pos.x >= highx - xdistance) {
@@ -97,6 +93,7 @@ void wallbounce(int lowx, int highx, int lowy, int highy, Vector2& pos, Vector2&
     if (pos.y >= highy - ydistance) {
         vel.y = -abs(vel.y);
         pos.y = highy - ydistance;
+        g = true;
     }
     else if (pos.y <= lowy + ydistance) {
         vel.y = abs(vel.y);
