@@ -22,10 +22,6 @@ void ballcollide::ballcollision(ballcollide* compare, Vector2 gravity) {
     float r2 = compare->get_r();
 
     if (circleoverlap(p1, p2, r1, r2)) {
-        if (grounded) {
-            compare->set_ground(true);
-        }
-        grounded = compare->get_ground();
 
         Vector2 dif = Vector2Subtract(p1, p2);// distance between circles
 
@@ -38,6 +34,13 @@ void ballcollide::ballcollision(ballcollide* compare, Vector2 gravity) {
         float m2 = compare->get_m();// mass
 
         bounce2D(v1, v2, m1, m2, angle, 0.95);//velocity calculations
+
+        if (grounded) {
+            m1 *= 100;
+        }
+        if (compare->get_ground()) {
+            m2 *= 100;
+        }
         resolvecirclecollision(p1, p2, r1, r2, m1, m2, v1, v2);//changes p1 and p2 so they arent inside each other
 
         set_pos(p1);
@@ -50,6 +53,8 @@ void ballcollide::ballcollision(ballcollide* compare, Vector2 gravity) {
 }
 
 void ballcollide::update(Vector2 gravity, Vector2 mousepos, bool pressed, bool released) {
+    rigidbody::update(gravity, mousepos);
+
     if (pincircle(mousepos, position, radius) && !held && pressed) {
         held = true;
     }
@@ -60,7 +65,6 @@ void ballcollide::update(Vector2 gravity, Vector2 mousepos, bool pressed, bool r
 
     wallbounce(0, 1000, 0, 1000, position, velocity, radius, radius, grounded);
 
-    rigidbody::update(gravity, mousepos);
 }
 
 void ballcollide::draw(camera cam) {

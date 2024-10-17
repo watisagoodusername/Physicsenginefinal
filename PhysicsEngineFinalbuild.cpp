@@ -133,32 +133,32 @@ int main() {
         if (scroll != 0) { cam.changezoom(pow(1.1, scroll)); }
 
         //COLLISION TESTS ---------------------------------------------
+        for (int i = 20; i > 0; i--) { // updates 80 times a frame
+            for (int i = 0; i < ballcount - 1; i++) {//updates velocities
+                ballcollide* current = &balls.at(i);
+                for (int j = i + 1; j < balls.size(); j++) {
+                    ballcollide* compare = &balls.at(j);
 
-        for (int i = 0; i < ballcount - 1; i++) {//updates velocities
-            ballcollide* current = &balls.at(i);
-            for (int j = i + 1; j < balls.size(); j++) {
-                ballcollide* compare = &balls.at(j);
+                    current->ballcollision(compare, gravity);
+                }
+            }
+            for (int i = 0; i < boxcount - 1; i++) {//updates velocities
+                rectcollide* current = &boxes.at(i);
+                for (int j = i + 1; j < boxcount; j++) {
+                    rectcollide* compare = &boxes.at(j);
 
-                current->ballcollision(compare, gravity);
+                    current->rectcollision(compare);
+                }
+            }
+            for (int i = 0; i < boxcount; i++) {//updates velocities
+                rectcollide* current = &boxes.at(i);
+                for (int j = 0; j < ballcount; j++) {
+                    ballcollide* compare = &balls.at(j);
+
+                    current->rectballcollision(compare);
+                }
             }
         }
-        for (int i = 0; i < boxcount - 1; i++) {//updates velocities
-            rectcollide* current = &boxes.at(i);
-            for (int j = i + 1; j < boxcount; j++) {
-                rectcollide* compare = &boxes.at(j);
-
-                current->rectcollision(compare);
-            }
-        }
-        for (int i = 0; i < boxcount; i++) {//updates velocities
-            rectcollide* current = &boxes.at(i);
-            for (int j = 0; j < ballcount; j++) {
-                ballcollide* compare = &balls.at(j);
-
-                current->rectballcollision(compare);
-            }
-        }
-
         //UPDATING --------------------------------------------
 
         for (int i = 0; i < ballcount; i++) {//update every rigidbody
@@ -199,8 +199,8 @@ int main() {
             DrawLine(oo.x, oo.y, oz.x, oz.y, BLACK);
             DrawLine(oz.x, oz.y, zz.x, zz.y, BLACK);
 
-            DrawTexture(wizardshadow, screenwidth - wizard.width, screenheight - wizard.height, CLITERAL(Color){ 0, 0, 0, 64 });
-            DrawTexture(wizard, screenwidth - wizard.width, screenheight - wizard.height, WHITE);
+            DrawTextureEx(wizard, cam.worldtocamspace(Vector2{ (float)screenwidth - wizard.width, (float)screenheight - wizard.width }), 0, cam.rescale(1), WHITE);
+            DrawTextureEx(wizard, cam.worldtocamspace(Vector2{ (float)screenwidth - wizard.width, (float)screenheight - wizard.width }), 0, cam.rescale(1), WHITE);
 
         EndDrawing();
     }

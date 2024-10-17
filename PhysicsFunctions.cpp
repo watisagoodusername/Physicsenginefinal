@@ -85,10 +85,12 @@ void wallbounce(int lowx, int highx, int lowy, int highy, Vector2& pos, Vector2&
     if (pos.x >= highx - xdistance) {
         vel.x = -abs(vel.x);
         pos.x = highx - xdistance;
+        g = true;
     }
     else if (pos.x <= lowx + xdistance) {
         vel.x = abs(vel.x);
         pos.x = lowx + xdistance;
+        g = true;
     }
     if (pos.y >= highy - ydistance) {
         vel.y = -abs(vel.y);
@@ -98,6 +100,7 @@ void wallbounce(int lowx, int highx, int lowy, int highy, Vector2& pos, Vector2&
     else if (pos.y <= lowy + ydistance) {
         vel.y = abs(vel.y);
         pos.y = lowy + ydistance;
+        g = true;
     }
 }
 

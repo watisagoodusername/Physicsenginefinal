@@ -24,15 +24,15 @@ void rigidbody::update(Vector2 gravity, Vector2 mousepos) {
         clicked(mousepos,maxspeed);
     }
 
-    position = Vector2Add(position, velocity);
-    position = Vector2Add(position, changeposition);
-    changeposition = Vector2Zero();
-
-    //if (!grounded) {
+    if (!grounded) {
         velocity.x += gravity.x;
         velocity.y += gravity.y;
-    //}
+    }
 
+    position = Vector2Add(position, velocity);
+    //position = Vector2Add(position, changeposition);
+    changeposition = Vector2Zero();
+    
     grounded = false;
 }
 
