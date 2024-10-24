@@ -7,6 +7,7 @@
 #include "include/rectcollide.h"
 #include "include/createobject.h"
 #include "include/camera.h"
+#include "snakeobject.h"
 
 int main() {
 
@@ -27,7 +28,7 @@ int main() {
     int ballcount = balls.size();
     int boxcount = boxes.size();
 
-    Vector2 gravity = Vector2{ 0, 1 };
+    Vector2 gravity = Vector2{ 0, 0 };
 
     Image wizardimg = LoadImage("Resources/Wizardofphysics.png"); // Loaded in CPU memory (RAM)
     Image wizardimg2 = LoadImage("Resources/Wizardofphysics.png");
@@ -65,7 +66,10 @@ int main() {
         if (IsMouseButtonReleased(1)) {
             if (ct.active) {
                 if (ct.objecttype == "ball") {
-                    balls.push_back(ct.finishcreationb(mousepos));
+                    ballcollide b = ct.finishcreationb(mousepos);
+                    if (b.get_r() > 1) {
+                        balls.push_back(b);
+                    }
                     ballcount = balls.size();
                 }
                 else if (ct.objecttype == "rect") {
@@ -102,16 +106,16 @@ int main() {
             }
             ballcount = balls.size();
         }
-        if (IsKeyPressed(KEY_S)) {
-            for (int i = 0; i < 457; i++) {
-                boxes.push_back(rectcollide(GetRandomValue(25, 28), GetRandomValue(25, 28), GetRandomValue(10, 990), GetRandomValue(10, 990)));
-            }
-            boxcount = boxes.size();
-        }
-        if (IsKeyPressed(KEY_W)) {
-            balls.push_back(ballcollide(GetRandomValue(8, 12), 850, 930, 1750, GetRandomValue(-5, -1), GetRandomValue(-5, -1)));
-            ballcount = balls.size();
-        }
+       // if (IsKeyPressed(KEY_S)) {
+        //    for (int i = 0; i < 457; i++) {
+        //        boxes.push_back(rectcollide(GetRandomValue(25, 28), GetRandomValue(25, 28), GetRandomValue(10, 990), GetRandomValue(10, 990)));
+        //    }
+         //   boxcount = boxes.size();
+        //}
+        //if (IsKeyPressed(KEY_W)) {
+        //    balls.push_back(ballcollide(GetRandomValue(8, 12), 850, 930, 1750, GetRandomValue(-5, -1), GetRandomValue(-5, -1)));
+        //    ballcount = balls.size();
+        //}
         if (IsKeyPressed(KEY_C)) {
             balls.clear();
             boxes.clear();
@@ -133,13 +137,23 @@ int main() {
         if (scroll != 0) { cam.changezoom(pow(1.1, scroll)); }
 
         //COLLISION TESTS ---------------------------------------------
-        for (int i = 20; i > 0; i--) { // updates 80 times a frame
+        //for (int i = 10; i > 0; i--) { // updates multiple times a frame
             for (int i = 0; i < ballcount - 1; i++) {//updates velocities
                 ballcollide* current = &balls.at(i);
                 for (int j = i + 1; j < balls.size(); j++) {
                     ballcollide* compare = &balls.at(j);
 
-                    current->ballcollision(compare, gravity);
+                    current->ballcollision(compare, gravity);;
+                }
+            }
+            for (int i = 10; i > 0; i--) {
+                for (int i = 0; i < ballcount - 1; i++) {//updates velocities
+                    ballcollide* current = &balls.at(i);
+                    for (int j = i + 1; j < balls.size(); j++) {
+                        ballcollide* compare = &balls.at(j);
+
+                        current->ballposition(compare);
+                    }
                 }
             }
             for (int i = 0; i < boxcount - 1; i++) {//updates velocities
@@ -158,15 +172,32 @@ int main() {
                     current->rectballcollision(compare);
                 }
             }
-        }
+        //}
         //UPDATING --------------------------------------------
-
+         
         for (int i = 0; i < ballcount; i++) {//update every rigidbody
             balls.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
         for (int i = 0; i < boxcount; i++) {//update every rigidbody
             boxes.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
+
+        //each object gets updated, then compared in one go
+        /*for (int i = 10; i > 0; i--) { // updates multiple times a frame
+            for (int i = 0; i < ballcount - 1; i++) {//updates velocities
+                ballcollide* current = &balls.at(i);
+                current->update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+                for (int j = i + 1; j < balls.size(); j++) {
+                    ballcollide* compare = &balls.at(j);
+
+                    current->ballcollision(compare, gravity);
+                }
+            }
+            if (ballcount > 0) {
+                ballcollide* last = &balls.at(ballcount - 1);
+                last->update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+            }
+        }*/
 
         BeginDrawing();
 
@@ -203,6 +234,8 @@ int main() {
             DrawTextureEx(wizard, cam.worldtocamspace(Vector2{ (float)screenwidth - wizard.width, (float)screenheight - wizard.width }), 0, cam.rescale(1), WHITE);
 
         EndDrawing();
+
+        std::cout << ballcount << "\n";
     }
 
     UnloadTexture(wizard);
