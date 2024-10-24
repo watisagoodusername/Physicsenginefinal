@@ -43,6 +43,14 @@ bool circleoverlap(Vector2 pos1, Vector2 pos2, float rad1, float rad2) {
 void resolvecirclecollision(Vector2& pos1, Vector2& pos2, float r1, float r2, float m1, float m2, Vector2 v1, Vector2 v2) {//move circles outside eachother
     float xdif = pos1.x - pos2.x;
     float ydif = pos1.y - pos2.y;
+
+    if (xdif == 0) {
+        xdif = 0.001;
+    }
+    if (ydif == 0) {
+        ydif = 0.001;
+    }
+
     float tdif = sqrt(xdif * xdif + ydif * ydif);//distance between points
 
     xdif /= tdif;
