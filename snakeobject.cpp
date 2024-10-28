@@ -1,4 +1,4 @@
-#include "snakeobject.h"
+#include "include/snakeobject.h"
 
 snakeobject::snakeobject(float xpos, float ypos, int xvel, int yvel) {
 	position.x = xpos;

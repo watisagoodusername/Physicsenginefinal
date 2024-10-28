@@ -90,23 +90,25 @@ void bounce2D(Vector2& vel1, Vector2& vel2, float m1, float m2, float angle, flo
 void wallbounce(int lowx, int highx, int lowy, int highy, Vector2& pos, Vector2& vel, float xdistance, float ydistance, bool& g) {
     //takes an object size xdistance by ydistance and reflects velocity if outside x/y bounds
 
+    float res = 0.90;
+
     if (pos.x >= highx - xdistance) {
-        vel.x = -abs(vel.x);
+        vel.x = -abs(vel.x * res);
         pos.x = highx - xdistance;
         g = true;
     }
     else if (pos.x <= lowx + xdistance) {
-        vel.x = abs(vel.x);
+        vel.x = abs(vel.x * res);
         pos.x = lowx + xdistance;
         g = true;
     }
     if (pos.y >= highy - ydistance) {
-        vel.y = -abs(vel.y);
+        vel.y = -abs(vel.y * res);
         pos.y = highy - ydistance;
         g = true;
     }
     else if (pos.y <= lowy + ydistance) {
-        vel.y = abs(vel.y);
+        vel.y = abs(vel.y * res);
         pos.y = lowy + ydistance;
         g = true;
     }

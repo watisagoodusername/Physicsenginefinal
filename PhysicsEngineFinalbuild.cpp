@@ -7,7 +7,7 @@
 #include "include/rectcollide.h"
 #include "include/createobject.h"
 #include "include/camera.h"
-#include "snakeobject.h"
+#include "include/snakeobject.h"
 
 int main() {
 
@@ -28,7 +28,7 @@ int main() {
     int ballcount = balls.size();
     int boxcount = boxes.size();
 
-    Vector2 gravity = Vector2{ 0, 0 };
+    Vector2 gravity = Vector2{ 0, 0.5 };
 
     Image wizardimg = LoadImage("Resources/Wizardofphysics.png"); // Loaded in CPU memory (RAM)
     Image wizardimg2 = LoadImage("Resources/Wizardofphysics.png");
@@ -136,45 +136,8 @@ int main() {
         int scroll = GetMouseWheelMove();
         if (scroll != 0) { cam.changezoom(pow(1.1, scroll)); }
 
-        //COLLISION TESTS ---------------------------------------------
-        //for (int i = 10; i > 0; i--) { // updates multiple times a frame
-            for (int i = 0; i < ballcount - 1; i++) {//updates velocities
-                ballcollide* current = &balls.at(i);
-                for (int j = i + 1; j < balls.size(); j++) {
-                    ballcollide* compare = &balls.at(j);
-
-                    current->ballcollision(compare, gravity);;
-                }
-            }
-            for (int i = 10; i > 0; i--) {
-                for (int i = 0; i < ballcount - 1; i++) {//updates velocities
-                    ballcollide* current = &balls.at(i);
-                    for (int j = i + 1; j < balls.size(); j++) {
-                        ballcollide* compare = &balls.at(j);
-
-                        current->ballposition(compare);
-                    }
-                }
-            }
-            for (int i = 0; i < boxcount - 1; i++) {//updates velocities
-                rectcollide* current = &boxes.at(i);
-                for (int j = i + 1; j < boxcount; j++) {
-                    rectcollide* compare = &boxes.at(j);
-
-                    current->rectcollision(compare);
-                }
-            }
-            for (int i = 0; i < boxcount; i++) {//updates velocities
-                rectcollide* current = &boxes.at(i);
-                for (int j = 0; j < ballcount; j++) {
-                    ballcollide* compare = &balls.at(j);
-
-                    current->rectballcollision(compare);
-                }
-            }
-        //}
         //UPDATING --------------------------------------------
-         
+
         for (int i = 0; i < ballcount; i++) {//update every rigidbody
             balls.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
         }
@@ -198,6 +161,45 @@ int main() {
                 last->update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
             }
         }*/
+
+        //COLLISION TESTS ---------------------------------------------
+        for (int i = 8; i > 0; i--) { // updates multiple times a frame
+            for (int i = 0; i < ballcount - 1; i++) {//updates velocities
+                ballcollide* current = &balls.at(i);
+                for (int j = i + 1; j < balls.size(); j++) {
+                    ballcollide* compare = &balls.at(j);
+
+                    current->ballcollision(compare, gravity);;
+                    current->ballposition(compare);
+                }
+            }
+            //for (int i = 10; i > 0; i--) {
+            //    for (int i = 0; i < ballcount - 1; i++) {//updates velocities
+            //        ballcollide* current = &balls.at(i);
+            //        for (int j = i + 1; j < balls.size(); j++) {
+            //            ballcollide* compare = &balls.at(j);
+
+            //            current->ballposition(compare);
+            //        }
+            //    }
+            //}
+            for (int i = 0; i < boxcount - 1; i++) {//updates velocities
+                rectcollide* current = &boxes.at(i);
+                for (int j = i + 1; j < boxcount; j++) {
+                    rectcollide* compare = &boxes.at(j);
+
+                    current->rectcollision(compare);
+                }
+            }
+            for (int i = 0; i < boxcount; i++) {//updates velocities
+                rectcollide* current = &boxes.at(i);
+                for (int j = 0; j < ballcount; j++) {
+                    ballcollide* compare = &balls.at(j);
+
+                    current->rectballcollision(compare);
+                }
+            }
+        }
 
         BeginDrawing();
 
