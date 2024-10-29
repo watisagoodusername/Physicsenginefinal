@@ -93,24 +93,28 @@ void wallbounce(int lowx, int highx, int lowy, int highy, Vector2& pos, Vector2&
     float res = 0.90;
 
     if (pos.x >= highx - xdistance) {
+        float overlap = highx - xdistance;
         vel.x = -abs(vel.x * res);
         pos.x = highx - xdistance;
-        g = true;
+        //g = true;
     }
     else if (pos.x <= lowx + xdistance) {
+        float overlap = lowx + xdistance;
         vel.x = abs(vel.x * res);
         pos.x = lowx + xdistance;
-        g = true;
+        // g = true;
     }
     if (pos.y >= highy - ydistance) {
+        float overlap = highy - ydistance;
         vel.y = -abs(vel.y * res);
         pos.y = highy - ydistance;
-        g = true;
+        //g = true;
     }
     else if (pos.y <= lowy + ydistance) {
+        float overlap = lowy + ydistance;
         vel.y = abs(vel.y * res);
         pos.y = lowy + ydistance;
-        g = true;
+        //g = true;
     }
 }
 

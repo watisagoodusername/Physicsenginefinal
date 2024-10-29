@@ -11,6 +11,8 @@
 
 int main() {
 
+    bool updatefirst = false;
+
     int screenwidth = 1000;
     int screenheight = 1000;
     InitWindow(screenwidth, screenheight, "physics");
@@ -106,6 +108,14 @@ int main() {
             }
             ballcount = balls.size();
         }
+        if (IsKeyPressed(KEY_U)) {
+            if (updatefirst) {
+                updatefirst = false;
+            }
+            else {
+                updatefirst = true;
+            }
+        }
        // if (IsKeyPressed(KEY_S)) {
         //    for (int i = 0; i < 457; i++) {
         //        boxes.push_back(rectcollide(GetRandomValue(25, 28), GetRandomValue(25, 28), GetRandomValue(10, 990), GetRandomValue(10, 990)));
@@ -136,13 +146,15 @@ int main() {
         int scroll = GetMouseWheelMove();
         if (scroll != 0) { cam.changezoom(pow(1.1, scroll)); }
 
-        //UPDATING --------------------------------------------
+        if (updatefirst) {
+            //UPDATING --------------------------------------------
 
-        for (int i = 0; i < ballcount; i++) {//update every rigidbody
-            balls.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
-        }
-        for (int i = 0; i < boxcount; i++) {//update every rigidbody
-            boxes.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+            for (int i = 0; i < ballcount; i++) {//update every rigidbody
+                balls.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+            }
+            for (int i = 0; i < boxcount; i++) {//update every rigidbody
+                boxes.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+            }
         }
 
         //each object gets updated, then compared in one go
@@ -169,7 +181,7 @@ int main() {
                 for (int j = i + 1; j < balls.size(); j++) {
                     ballcollide* compare = &balls.at(j);
 
-                    current->ballcollision(compare, gravity);;
+                    current->ballcollision(compare, gravity);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                     current->ballposition(compare);
                 }
             }
@@ -198,6 +210,17 @@ int main() {
 
                     current->rectballcollision(compare);
                 }
+            }
+        }
+
+        if (!updatefirst) {
+            //UPDATING --------------------------------------------
+
+            for (int i = 0; i < ballcount; i++) {//update every rigidbody
+                balls.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
+            }
+            for (int i = 0; i < boxcount; i++) {//update every rigidbody
+                boxes.at(i).update(gravity, mousepos, IsMouseButtonPressed(0), IsMouseButtonReleased(0));
             }
         }
 

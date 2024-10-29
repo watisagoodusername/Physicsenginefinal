@@ -36,7 +36,7 @@ public:
 
     void set_pos(Vector2 p);
 
-    bool get_ground() { return grounded; };
+    bool &get_ground() { return grounded; };
 
     void set_ground(bool g) { grounded = g; };
 
