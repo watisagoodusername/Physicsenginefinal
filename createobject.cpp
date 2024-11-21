@@ -34,17 +34,19 @@ ballcollide createobject::finishcreationb(Vector2 mousepos) {//creates a ball co
 
     Vector2 s = size();
 
-    if (s.x >= minsize and s.y >= minsize) {
+    //if (s.x >= minsize and s.y >= minsize) {
         if (start.x < end.x) { centre.x = start.x + s.x / 2; }
         else { centre.x = end.x + s.x / 2; }
         if (start.y < end.y) { centre.y = start.y + s.y / 2; }
         else { centre.y = end.y + s.y / 2; }
 
-        return ballcollide(radius(), centre.x, centre.y);
-    }
-    else {
         active = false;
-    }
+
+        return ballcollide(radius(), centre.x, centre.y);
+    //}
+    //else {
+    //    active = false;
+    //}
 }
 
 rectcollide createobject::finishcreationr(Vector2 mousepos) {//creates a rectangle collider
@@ -53,17 +55,17 @@ rectcollide createobject::finishcreationr(Vector2 mousepos) {//creates a rectang
 
     Vector2 s = size();
 
-    if (s.x >= minsize and s.y >= minsize) {
+    //if (s.x >= minsize and s.y >= minsize) {
         if (start.x < end.x) { centre.x = start.x + s.x / 2; }
         else { centre.x = end.x + s.x / 2; }
         if (start.y < end.y) { centre.y = start.y + s.y / 2; }
         else { centre.y = end.y + s.y / 2; }
 
         return rectcollide(s.x, s.y, centre.x, centre.y);
-    }
-    else {
-        active = false;
-    }
+    //}
+    //else {
+    //    active = false;
+    //}
 }
 
 void createobject::draw(Vector2 mousepos, camera cam) {

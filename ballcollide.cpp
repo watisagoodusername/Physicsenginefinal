@@ -41,19 +41,39 @@ void ballcollide::ballcollision(ballcollide* compare, Vector2 gravity) {
         if (compare->get_ground()) {
             m2 *= 100;
         }
-        resolvecirclecollision(p1, p2, r1, r2, m1, m2, v1, v2);//changes p1 and p2 so they arent inside each other
-
-        set_pos(p1);
-        compare->set_pos(p2);//applies position
-
+        
         velocity = v1;
         compare->set_vel(v2);//applies velocity
     }
 
 }
 
+void ballcollide::ballposition(ballcollide* compare) {
+    Vector2 p1 = position;
+    Vector2 p2 = compare->get_pos();// position values
+
+    float r1 = radius;
+    float r2 = compare->get_r();
+
+    Vector2 v1 = velocity;
+    Vector2 v2 = compare->get_vel(); //velocity values, passed by value
+
+    if (circleoverlap(p1, p2, r1, r2)) {
+
+        float m1 = mass;
+        float m2 = compare->get_m();// mass
+
+        resolvecirclecollision(p1, p2, r1, r2, m1, m2, v1, v2);//changes p1 and p2 so they arent inside each other
+    }
+    set_pos(p1);
+    compare->set_pos(p2);//applies position
+}
+
+void ballcollide::walls() {
+    wallbounce(0, 1000, 0, 1000, position, velocity, radius, radius, grounded);
+}
+
 void ballcollide::update(Vector2 gravity, Vector2 mousepos, bool pressed, bool released) {
-    rigidbody::update(gravity, mousepos);
 
     if (pincircle(mousepos, position, radius) && !held && pressed) {
         held = true;
@@ -63,8 +83,9 @@ void ballcollide::update(Vector2 gravity, Vector2 mousepos, bool pressed, bool r
         velocity = Vector2ClampValue(velocity, 0, maxspeed);
     }
 
-    wallbounce(0, 1000, 0, 1000, position, velocity, radius, radius, grounded);
+    //wallbounce(0, 1000, 0, 1000, position, velocity, radius, radius, grounded);
 
+    rigidbody::update(gravity, mousepos);
 }
 
 void ballcollide::draw(camera cam) {

@@ -9,9 +9,15 @@ public:
 
     void rectballcollision(ballcollide* compare);
 
+    void rectballposition(ballcollide* compare);
+
     void rectcollision(rectcollide* compare);
 
+    void rectposition(rectcollide* compare);
+
     void update(Vector2 gravity, Vector2 mousepos, bool pressed, bool released);
+
+    void walls();
 
     void draw(camera cam);
 

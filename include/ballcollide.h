@@ -13,6 +13,10 @@ public:
 
     void update(Vector2 gravity, Vector2 mousepos, bool press, bool release);
 
+    void ballposition(ballcollide* compare);
+
+    void walls();
+
     void draw(camera cam);
 
     const float get_r() { return radius; };
